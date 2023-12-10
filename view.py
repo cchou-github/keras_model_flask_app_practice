@@ -8,7 +8,7 @@ import tensorflow_hub as hub
 import numpy as np
 import matplotlib.pyplot as plt
 
-from process_image import to_tf_image, to_image_tag_src
+from process_image import create_tf_image_data_batches, to_image_tag_src, to_tf_image
 from unique_breeds import unique_breeds
 
 app = Flask(__name__)
@@ -16,22 +16,6 @@ app = Flask(__name__)
 # temporarily comment out for initial dev.
 model = tf.keras.models.load_model("20231118-13041700312647-full-images-mobilenet2-Chou.h5",
                                      custom_objects={"KerasLayer": hub.KerasLayer})
-
-# Define the batch size, 32 is a good start
-BATCH_SIZE = 32
-# Create a function to turn data into batches
-def create_data_batches(tf_images, batch_size=BATCH_SIZE, valid_data=False):
-    """
-    Create batches of data out of image (X) and label (y) pairs.
-    Shuffle the data if it's training data but doesn't shuffle if it's validation data.
-    Also accepts test data as imput (no labels).
-    """
-    # If the data is a test dataset, we probably dont have labels
-    print("Create test data batches...")
-    data = tf.data.Dataset.from_tensor_slices(tf_images) # Only filepaths (no labels)
-    data_batch = data.batch(BATCH_SIZE)
-
-    return data_batch
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -49,7 +33,7 @@ def home():
         image_tag_src = to_image_tag_src(file.content_type, file_data)
 
         tf_image = to_tf_image(file_data)
-        data_batches = create_data_batches([tf_image])
+        data_batches = create_tf_image_data_batches([tf_image])
         app.logger.info(data_batches)
 
         predictions = model.predict(data_batches, verbose=1)
