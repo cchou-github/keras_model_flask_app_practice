@@ -13,49 +13,44 @@ from unique_breeds import unique_breeds
 
 app = Flask(__name__)
 
+# load the model when app starts
 model = tf.keras.models.load_model("20231118-13041700312647-full-images-mobilenet2-Chou.h5",
                                      custom_objects={"KerasLayer": hub.KerasLayer})
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    image_tag_src = None
-    tf_image = None
-    predicted_label = None
-    max_probs = None
+    top_10_pred_dict   = None
+    image_tag_src      = None
+    tf_image           = None
+    top_1_pred_label   = None
+    top_1_pred_prob    = None
     plot_image_tag_src = None
 
     if request.method == 'POST':
+        # get the uploaded image and render as base64 string in templates
         file = request.files['file']
         file_data = file.stream.read()
-
         image_tag_src = to_image_tag_src(file.content_type, file_data)
 
+        # create tf_image_data_batches and predict it.
         tf_image = to_tf_image(file_data)
         data_batches = create_tf_image_data_batches([tf_image])
         predictions = model.predict(data_batches, verbose=1)
 
+        # get top 10 predictions
         top_10_pred_dict = get_top_10_pred_dict(predictions[0], unique_breeds())
+        top_1_pred_label = next(iter(top_10_pred_dict)) # first key in top_10_pred_dict
+        top_1_pred_prob = top_10_pred_dict[top_1_pred_label]
 
-        plot_binary = plot_prediction_to_binary(top_10_pred_dict) # we only have one prediction at a time for now
+        plot_binary        = plot_prediction_to_binary(top_10_pred_dict) # we only have one prediction at a time for now
         plot_image_tag_src = to_image_tag_src("png", plot_binary)
-
-        # First prediction
-        index = 0
-        # app.logger.info(predictions[index])
-        # app.logger.info(f"Max value(probability of predition): {np.max(predictions[index])}")
-        # app.logger.info(f"Sum: {np.sum(predictions[index])}")
-        # app.logger.info(f"Max index: {np.argmax(predictions[index])}")
-        # app.logger.info(f"Predicted label: {unique_breeds()[np.argmax(predictions[index])]}")
-
-        predicted_label = unique_breeds()[np.argmax(predictions[index])]
-        max_probs = round(np.max(predictions[index]) * 100, 2)
     
     return render_template('index.html',
                             image_binary=image_tag_src,
                             tf_image=tf_image,
+                            top_1_pred_label=top_1_pred_label,
+                            top_1_pred_prob=top_1_pred_prob,
                             top_10_pred_dict=top_10_pred_dict,
-                            predicted_label=predicted_label,
-                            max_probs=max_probs,
                             plot_image_tag_src=plot_image_tag_src)
 
 

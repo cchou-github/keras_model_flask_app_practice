@@ -55,7 +55,7 @@ def to_image_tag_src(file_content_type, file_data):
 
 def get_top_10_pred_dict(pred_prob, unique_breeds):
     # Find the top 10 prediction confidence indexes
-    top_10_pred_indexes = pred_prob.argsort()[-10:]
+    top_10_pred_indexes = pred_prob.argsort()[-10:][::-1]
     # Find the top 10 prediction confidence values
     top_10_pred_values = pred_prob[top_10_pred_indexes]
     # Find the top 10 prediction labels
@@ -77,20 +77,24 @@ def plot_prediction_to_binary(top_10_pred_dict):
 
     # Setup plot
     top_plot = plt.barh(np.arange(len(top_10_pred_labels)),
-                      top_10_pred_values,
+                      top_10_pred_values[::-1],
                       color="orange")
     plt.xlim([0, 1])
     plt.yticks(np.arange(len(top_10_pred_labels)),
-              labels=top_10_pred_labels
+              labels=top_10_pred_labels[::-1]
               )
     # Display values on the bars
-    for index, value in enumerate(top_10_pred_values):
+    for index, value in enumerate(top_10_pred_values[::-1]):
         plt.text(value, index, f'{value:.4f}', ha='left', va='center', color="grey")
 
     
     image_stream = io.BytesIO()
     plt.savefig(image_stream, format='png', bbox_inches='tight')
     image_binary = image_stream.getvalue()
+
     image_stream.close()
+    plt.clf()
+    plt.cla()
+    plt.close()
 
     return image_binary
