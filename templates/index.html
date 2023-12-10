@@ -37,8 +37,8 @@
                     - Probabilities: <span style="font-weight: bold;">{{ top_1_pred_prob }}%</span><br>
                     <P>
                         See what {{ top_1_pred_label }} looks like in Google image search:
-                        <a href="https://www.google.com/search?q={{ top_1_pred_label }}&tbm=isch" target="_blank">
-                            https://www.google.com/search?q={{ top_1_pred_label }}&tbm=isch
+                        <a href="https://www.google.com/search?q={{ top_1_pred_label }}+dog&tbm=isch" target="_blank">
+                            https://www.google.com/search?q={{ top_1_pred_label }}+dog&tbm=isch
                         </a>
                     </P>
                 </td>
@@ -47,7 +47,7 @@
                         {% for key, value in top_10_pred_dict.items() %}
                             <tr>
                                 <td>
-                                    <a href="https://www.google.com/search?q={{ key }}&tbm=isch" target="_blank">
+                                    <a href="https://www.google.com/search?q={{ key }}+dog&tbm=isch" target="_blank">
                                         {{ key }}
                                     </a>
                                 </td>
