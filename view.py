@@ -13,7 +13,6 @@ from unique_breeds import unique_breeds
 
 app = Flask(__name__)
 
-# temporarily comment out for initial dev.
 model = tf.keras.models.load_model("20231118-13041700312647-full-images-mobilenet2-Chou.h5",
                                      custom_objects={"KerasLayer": hub.KerasLayer})
 

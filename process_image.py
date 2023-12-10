@@ -10,8 +10,6 @@ def to_tf_image(image_binary, image_size=IMAGE_SIZE):
     """
     Takes an image_binary and turns the image into a Tensor.
     """
-    # Read in an image file
-    # image = tf.io.read_file(image_path)
     # Turn the jpeg image into numerical Tensor with 3 colour channels (R, G, B)
     tf_image = tf.image.decode_jpeg(image_binary, channels=3)
     # Convert the colour channel values from 0-255 to 0-1 values
