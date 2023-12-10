@@ -53,17 +53,27 @@ def to_image_tag_src(file_content_type, file_data):
     # 「data:image/png;base64,xxxxx」の形式にする
     return f'data:image/{image_tag_src_content_type};base64,{uploadimage_base64_string}'
 
-def plot_prediction_to_binary(pred_prob, unique_breeds):
-    """
-    Plot the top 10 highest prediction confidences
-    """
-
+def get_top_10_pred_dict(pred_prob, unique_breeds):
     # Find the top 10 prediction confidence indexes
     top_10_pred_indexes = pred_prob.argsort()[-10:]
     # Find the top 10 prediction confidence values
     top_10_pred_values = pred_prob[top_10_pred_indexes]
     # Find the top 10 prediction labels
     top_10_pred_labels = unique_breeds[top_10_pred_indexes]
+
+    top_10_pred_dict = {}
+    for i in range(0, 10):
+      top_10_pred_dict[top_10_pred_labels[i]] = top_10_pred_values[i]
+
+    return top_10_pred_dict
+
+
+def plot_prediction_to_binary(top_10_pred_dict):
+    """
+    Plot the top 10 highest prediction confidences
+    """
+    top_10_pred_labels = list(top_10_pred_dict)
+    top_10_pred_values = list(top_10_pred_dict.values())
 
     # Setup plot
     top_plot = plt.barh(np.arange(len(top_10_pred_labels)),

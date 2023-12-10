@@ -8,7 +8,7 @@ import tensorflow_hub as hub
 import numpy as np
 import matplotlib.pyplot as plt
 
-from process_image import create_tf_image_data_batches, to_image_tag_src, to_tf_image, plot_prediction_to_binary
+from process_image import create_tf_image_data_batches, to_image_tag_src, to_tf_image, plot_prediction_to_binary, get_top_10_pred_dict
 from unique_breeds import unique_breeds
 
 app = Flask(__name__)
@@ -24,8 +24,6 @@ def home():
     max_probs = None
     plot_image_tag_src = None
 
-    app.logger.info(unique_breeds())
-
     if request.method == 'POST':
         file = request.files['file']
         file_data = file.stream.read()
@@ -34,25 +32,31 @@ def home():
 
         tf_image = to_tf_image(file_data)
         data_batches = create_tf_image_data_batches([tf_image])
-        app.logger.info(data_batches)
-
         predictions = model.predict(data_batches, verbose=1)
 
-        plot_binary = plot_prediction_to_binary(predictions[0], unique_breeds()) # we only have one prediction at a time for now
+        top_10_pred_dict = get_top_10_pred_dict(predictions[0], unique_breeds())
+
+        plot_binary = plot_prediction_to_binary(top_10_pred_dict) # we only have one prediction at a time for now
         plot_image_tag_src = to_image_tag_src("png", plot_binary)
 
         # First prediction
         index = 0
-        app.logger.info(predictions[index])
-        app.logger.info(f"Max value(probability of predition): {np.max(predictions[index])}")
-        app.logger.info(f"Sum: {np.sum(predictions[index])}")
-        app.logger.info(f"Max index: {np.argmax(predictions[index])}")
-        app.logger.info(f"Predicted label: {unique_breeds()[np.argmax(predictions[index])]}")
+        # app.logger.info(predictions[index])
+        # app.logger.info(f"Max value(probability of predition): {np.max(predictions[index])}")
+        # app.logger.info(f"Sum: {np.sum(predictions[index])}")
+        # app.logger.info(f"Max index: {np.argmax(predictions[index])}")
+        # app.logger.info(f"Predicted label: {unique_breeds()[np.argmax(predictions[index])]}")
 
         predicted_label = unique_breeds()[np.argmax(predictions[index])]
         max_probs = round(np.max(predictions[index]) * 100, 2)
     
-    return render_template('index.html', image_binary=image_tag_src, tf_image=tf_image, predicted_label=predicted_label, max_probs=max_probs, plot_image_tag_src=plot_image_tag_src)
+    return render_template('index.html',
+                            image_binary=image_tag_src,
+                            tf_image=tf_image,
+                            top_10_pred_dict=top_10_pred_dict,
+                            predicted_label=predicted_label,
+                            max_probs=max_probs,
+                            plot_image_tag_src=plot_image_tag_src)
 
 
 if __name__ == "__main__":
