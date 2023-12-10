@@ -6,6 +6,7 @@ from keras.models import load_model
 import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
+import matplotlib.pyplot as plt
 
 from process_image import to_tf_image, to_image_tag_src
 from unique_breeds import unique_breeds

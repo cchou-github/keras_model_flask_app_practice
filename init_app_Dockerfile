@@ -12,3 +12,4 @@ RUN python -m pip install flask
 RUN python -m pip install keras
 RUN python -m pip install tensorflow
 RUN python -m pip install numpy
+RUN python -m pip install matplotlib
