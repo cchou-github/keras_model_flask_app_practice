@@ -25,6 +25,7 @@ def home():
         file = request.files['file']
         file_data = file.stream.read()
         tf_image = process_image(file_data)
+        app.logger.info(tf_image)
 
         # bytesをbase64にエンコードするライブラリをインポート
         import base64
@@ -39,13 +40,10 @@ def home():
  
         # bytesファイルのデータをbase64にエンコードする
         uploadimage_base64 = base64.b64encode(file_data)
-        
         # base64形式のデータを文字列に変換する。その際に、「b'」と「'」の文字列を除去する
         uploadimage_base64_string = re.sub('b\'|\'', '', str(uploadimage_base64))
-        
         # 「data:image/png;base64,xxxxx」の形式にする
         image_binary = f'data:image/{content_type};base64,{uploadimage_base64_string}'
-        app.logger.info(tf_image)
     
     return render_template('index.html', image_binary=image_binary, tf_image=tf_image)
 
