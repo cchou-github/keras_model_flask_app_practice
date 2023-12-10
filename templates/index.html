@@ -6,7 +6,7 @@
     <title>Flask Docker</title>
 </head>
 <body>
-    <h1>Dog vision</h1>
+    <h1>Dog Vision</h1>
     <p>
         This is a Flask app that predicts the breed of the dog in an image of a dog.<br>
         The result will not be accurate if you upload an image that is not dog's image.
@@ -20,7 +20,7 @@
     {% if image_binary %}
         <img src="{{image_binary}}"><br>
         Predicted breed name: {{ predicted_label }}<br>
-        Probibilities: {{ max_probs }}<br>
+        Probabilities: {{ max_probs }}<br>
         see whats {{ predicted_label }} looks like in Google image search: 
         <a href="https://www.google.com/search?q={{ predicted_label }}&tbm=isch" target="_blank">
             https://www.google.com/search?q={{ predicted_label }}&tbm=isch
