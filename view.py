@@ -6,7 +6,7 @@ from keras.models import load_model
 import tensorflow as tf
 import tensorflow_hub as hub
 
-from process_image import process_image
+from process_image import to_tf_image, to_image_tag_src
 from unique_breeds import unique_breeds
 
 app = Flask(__name__)
@@ -17,35 +17,20 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    image_binary = None
+    image_tag_src = None
     tf_image = None
     app.logger.info(unique_breeds())
-
+    
     if request.method == 'POST':
         file = request.files['file']
         file_data = file.stream.read()
-        tf_image = process_image(file_data)
+
+        image_tag_src = to_image_tag_src(file.content_type, file_data)
+        tf_image = to_tf_image(file_data)
+
         app.logger.info(tf_image)
-
-        # bytesをbase64にエンコードするライブラリをインポート
-        import base64
-        import re
-
-        content_type = ''
-        # ファイル形式を取得
-        if 'png' in file.content_type:
-            content_type = 'png'
-        elif 'jpeg' in file.content_type:
-            content_type = 'jpeg'
- 
-        # bytesファイルのデータをbase64にエンコードする
-        uploadimage_base64 = base64.b64encode(file_data)
-        # base64形式のデータを文字列に変換する。その際に、「b'」と「'」の文字列を除去する
-        uploadimage_base64_string = re.sub('b\'|\'', '', str(uploadimage_base64))
-        # 「data:image/png;base64,xxxxx」の形式にする
-        image_binary = f'data:image/{content_type};base64,{uploadimage_base64_string}'
     
-    return render_template('index.html', image_binary=image_binary, tf_image=tf_image)
+    return render_template('index.html', image_binary=image_tag_src, tf_image=tf_image)
 
 
 if __name__ == "__main__":
