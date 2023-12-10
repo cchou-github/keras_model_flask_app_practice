@@ -1,7 +1,8 @@
+import numpy as np
 
 # 120 unique breeds
 def unique_breeds():
-    return ['affenpinscher', 'afghan_hound', 'african_hunting_dog', 'airedale',
+    return  np.asarray(['affenpinscher', 'afghan_hound', 'african_hunting_dog', 'airedale',
        'american_staffordshire_terrier', 'appenzeller',
        'australian_terrier', 'basenji', 'basset', 'beagle',
        'bedlington_terrier', 'bernese_mountain_dog',
@@ -36,4 +37,4 @@ def unique_breeds():
        'tibetan_mastiff', 'tibetan_terrier', 'toy_poodle', 'toy_terrier',
        'vizsla', 'walker_hound', 'weimaraner', 'welsh_springer_spaniel',
        'west_highland_white_terrier', 'whippet',
-       'wire-haired_fox_terrier', 'yorkshire_terrier']
+       'wire-haired_fox_terrier', 'yorkshire_terrier'])

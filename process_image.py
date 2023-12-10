@@ -1,6 +1,10 @@
 import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+
 import base64
 import re
+import io
 
 
 IMAGE_SIZE = 224 # Define image size. 224 * 224 is required by mobilenet V2
@@ -48,3 +52,35 @@ def to_image_tag_src(file_content_type, file_data):
     uploadimage_base64_string = re.sub('b\'|\'', '', str(uploadimage_base64))
     # 「data:image/png;base64,xxxxx」の形式にする
     return f'data:image/{image_tag_src_content_type};base64,{uploadimage_base64_string}'
+
+def plot_prediction_to_binary(pred_prob, unique_breeds):
+    """
+    Plot the top 10 highest prediction confidences
+    """
+
+    # Find the top 10 prediction confidence indexes
+    top_10_pred_indexes = pred_prob.argsort()[-10:]
+    # Find the top 10 prediction confidence values
+    top_10_pred_values = pred_prob[top_10_pred_indexes]
+    # Find the top 10 prediction labels
+    top_10_pred_labels = unique_breeds[top_10_pred_indexes]
+
+    # Setup plot
+    top_plot = plt.barh(np.arange(len(top_10_pred_labels)),
+                      top_10_pred_values,
+                      color="orange")
+    plt.xlim([0, 1])
+    plt.yticks(np.arange(len(top_10_pred_labels)),
+              labels=top_10_pred_labels
+              )
+    # Display values on the bars
+    for index, value in enumerate(top_10_pred_values):
+        plt.text(value, index, f'{value:.4f}', ha='left', va='center', color="grey")
+
+    
+    image_stream = io.BytesIO()
+    plt.savefig(image_stream, format='png', bbox_inches='tight')
+    image_binary = image_stream.getvalue()
+    image_stream.close()
+
+    return image_binary

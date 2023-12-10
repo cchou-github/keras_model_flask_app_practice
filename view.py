@@ -8,7 +8,7 @@ import tensorflow_hub as hub
 import numpy as np
 import matplotlib.pyplot as plt
 
-from process_image import create_tf_image_data_batches, to_image_tag_src, to_tf_image
+from process_image import create_tf_image_data_batches, to_image_tag_src, to_tf_image, plot_prediction_to_binary
 from unique_breeds import unique_breeds
 
 app = Flask(__name__)
@@ -22,6 +22,7 @@ def home():
     tf_image = None
     predicted_label = None
     max_probs = None
+    plot_image_tag_src = None
 
     app.logger.info(unique_breeds())
 
@@ -37,6 +38,9 @@ def home():
 
         predictions = model.predict(data_batches, verbose=1)
 
+        plot_binary = plot_prediction_to_binary(predictions[0], unique_breeds()) # we only have one prediction at a time for now
+        plot_image_tag_src = to_image_tag_src("png", plot_binary)
+
         # First prediction
         index = 0
         app.logger.info(predictions[index])
@@ -48,7 +52,7 @@ def home():
         predicted_label = unique_breeds()[np.argmax(predictions[index])]
         max_probs = round(np.max(predictions[index]) * 100, 2)
     
-    return render_template('index.html', image_binary=image_tag_src, tf_image=tf_image, predicted_label=predicted_label, max_probs=max_probs)
+    return render_template('index.html', image_binary=image_tag_src, tf_image=tf_image, predicted_label=predicted_label, max_probs=max_probs, plot_image_tag_src=plot_image_tag_src)
 
 
 if __name__ == "__main__":
