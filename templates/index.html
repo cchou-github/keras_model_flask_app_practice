@@ -6,6 +6,16 @@
     <title>Flask Docker</title>
 </head>
 <body>
-    <h1>This is a Flask App containerised with Docker</h1>
+    <h1>Dog vision</h1>
+    <p>This is an app that predicts the breed of the dog in a image of a dog.</p>
+
+    <form method="post" enctype="multipart/form-data">
+        <p><input type="file" name="file">
+        <input type="submit" value="predict!">
+    </form>
+
+    {% if image_binary %}
+        <img src="{{image_binary}}">
+    {% endif %}
 </body>
 </html>
