@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>Flask Docker</title>
 </head>
+<style>
+    td { padding: 10px }
+</style>
 <body>
     <h1>Dog Vision</h1>
     <p>
@@ -12,19 +15,31 @@
         The result will not be accurate if you upload an image that is not dog's image.
     </p>
 
-    <form method="post" enctype="multipart/form-data">
-        <p><input type="file" name="file">
-        <input type="submit" value="Predict!">
-    </form>
-
+    <p>
+        <form method="post" enctype="multipart/form-data">
+            1. Upload an jpeg/png image: <input type="file" name="file"><br>
+            2. <input type="submit" value="Predict!">
+        </form>
+    </p>
     {% if image_binary %}
-        <img src="{{image_binary}}"><br>
-        Predicted breed name: {{ predicted_label }}<br>
-        Probabilities: {{ max_probs }}<br>
-        See what {{ predicted_label }} looks like in Google image search: 
-        <a href="https://www.google.com/search?q={{ predicted_label }}&tbm=isch" target="_blank">
-            https://www.google.com/search?q={{ predicted_label }}&tbm=isch
-        </a>
+    <table border="1" style="border-collapse: collapse">
+        <tr>
+            <td style="width: 500px">
+                <img src="{{image_binary}}"><br>
+                Highest posibile breed: {{ predicted_label }}<br>
+                Probabilities: {{ max_probs }}%<br>
+                <P>
+                    See what {{ predicted_label }} looks like in Google image search: <br>
+                    <a href="https://www.google.com/search?q={{ predicted_label }}&tbm=isch" target="_blank">
+                        https://www.google.com/search?q={{ predicted_label }}&tbm=isch
+                    </a>
+                </P>
+            </td>
+            <td style="width: 300px">
+                (WIP)top ten probs
+            </td>
+        </tr>
+    </table>
     {% endif %}
 </body>
 </html>
