@@ -36,6 +36,9 @@ def create_data_batches(tf_images, batch_size=BATCH_SIZE, valid_data=False):
 def home():
     image_tag_src = None
     tf_image = None
+    predicted_label = None
+    max_probs = None
+
     app.logger.info(unique_breeds())
 
     if request.method == 'POST':
@@ -57,8 +60,11 @@ def home():
         app.logger.info(f"Sum: {np.sum(predictions[index])}")
         app.logger.info(f"Max index: {np.argmax(predictions[index])}")
         app.logger.info(f"Predicted label: {unique_breeds()[np.argmax(predictions[index])]}")
+
+        predicted_label = unique_breeds()[np.argmax(predictions[index])]
+        max_probs = round(np.max(predictions[index]) * 100, 2)
     
-    return render_template('index.html', image_binary=image_tag_src, tf_image=tf_image)
+    return render_template('index.html', image_binary=image_tag_src, tf_image=tf_image, predicted_label=predicted_label, max_probs=max_probs)
 
 
 if __name__ == "__main__":
