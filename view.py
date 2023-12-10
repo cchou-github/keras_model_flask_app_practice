@@ -46,6 +46,24 @@ unique_breeds = ['affenpinscher', 'afghan_hound', 'african_hunting_dog', 'aireda
        'west_highland_white_terrier', 'whippet',
        'wire-haired_fox_terrier', 'yorkshire_terrier']
 
+# Define image size
+IMAGE_SIZE = 224
+# Create a function for preprocessing images
+def process_image(image_binary, image_size=IMAGE_SIZE):
+  """
+  Takes an image_binary and turns the iamge into a Tensor.
+  """
+  # Read in an image file
+  # image = tf.io.read_file(image_path)
+  # Turn the jpeg image into numerical Tensor with 3 colour channels (R, G, B)
+  tf_image = tf.image.decode_jpeg(image_binary, channels=3)
+  # Convert the colour channel values from 0-255 to 0-1 values
+  tf_image = tf.image.convert_image_dtype(tf_image, tf.float32)
+  # Resize the image to our desired value (224, 224)
+  tf_image = tf.image.resize(tf_image, size=[IMAGE_SIZE, IMAGE_SIZE])
+
+  return tf_image
+
 # temporarily comment out for initial dev.
 # model = tf.keras.models.load_model("20231118-13041700312647-full-images-mobilenet2-Chou.h5",
 #                                      custom_objects={"KerasLayer": hub.KerasLayer})
@@ -53,9 +71,12 @@ unique_breeds = ['affenpinscher', 'afghan_hound', 'african_hunting_dog', 'aireda
 @app.route('/', methods=['GET', 'POST'])
 def home():
     image_binary = None
+    tf_image = None
 
     if request.method == 'POST':
         file = request.files['file']
+        file_data = file.stream.read()
+        tf_image = process_image(file_data)
 
         # bytesをbase64にエンコードするライブラリをインポート
         import base64
@@ -69,15 +90,16 @@ def home():
             content_type = 'jpeg'
  
         # bytesファイルのデータをbase64にエンコードする
-        uploadimage_base64 = base64.b64encode(file.stream.read())
+        uploadimage_base64 = base64.b64encode(file_data)
         
         # base64形式のデータを文字列に変換する。その際に、「b'」と「'」の文字列を除去する
         uploadimage_base64_string = re.sub('b\'|\'', '', str(uploadimage_base64))
         
         # 「data:image/png;base64,xxxxx」の形式にする
         image_binary = f'data:image/{content_type};base64,{uploadimage_base64_string}'
-
-    return render_template('index.html', image_binary=image_binary)
+        app.logger.error(tf_image)
+    
+    return render_template('index.html', image_binary=image_binary, tf_image=tf_image)
 
 
 if __name__ == "__main__":
