@@ -30,7 +30,7 @@ def home():
         # get the uploaded image and render as base64 string in templates
         file = request.files['file']
         file_data = file.stream.read()
-        image_tag_src = to_image_tag_src(file.content_type, file_data)
+        image_tag_src = to_image_tag_src(file_data)
 
         # create tf_image_data_batches and predict it.
         tf_image = to_tf_image(file_data)
@@ -43,7 +43,7 @@ def home():
         top_1_pred_prob = top_10_pred_dict[top_1_pred_label]
 
         plot_binary        = plot_prediction_to_binary(top_10_pred_dict) # we only have one prediction at a time for now
-        plot_image_tag_src = to_image_tag_src("png", plot_binary)
+        plot_image_tag_src = to_image_tag_src(plot_binary)
     
     return render_template('index.html',
                             image_binary=image_tag_src,

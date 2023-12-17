@@ -33,7 +33,7 @@ def create_tf_image_data_batches(tf_images, batch_size=BATCH_SIZE):
 
     return data_batch
 
-def to_image_tag_src(file_content_type, file_data):
+def to_image_tag_src(file_data):
     """
     Create base64 strings for image tag in HTML
     """
@@ -41,17 +41,17 @@ def to_image_tag_src(file_content_type, file_data):
     image_tag_src_content_type = ''
 
     # ファイル形式を取得
-    if 'png' in file_content_type:
-        image_tag_src_content_type = 'png'
-    elif 'jpeg' in file_content_type:
-        image_tag_src_content_type = 'jpeg'
+    # if 'png' in file_content_type:
+    #     image_tag_src_content_type = 'png'
+    # elif 'jpeg' in file_content_type:
+    #     image_tag_src_content_type = 'jpeg'
 
     # bytesファイルのデータをbase64にエンコードする
     uploadimage_base64 = base64.b64encode(file_data)
     # base64形式のデータを文字列に変換する。その際に、「b'」と「'」の文字列を除去する
     uploadimage_base64_string = re.sub('b\'|\'', '', str(uploadimage_base64))
     # 「data:image/png;base64,xxxxx」の形式にする
-    return f'data:image/{image_tag_src_content_type};base64,{uploadimage_base64_string}'
+    return f'data:image/*;base64,{uploadimage_base64_string}'
 
 def get_top_10_pred_dict(pred_prob, unique_breeds):
     # Find the top 10 prediction confidence indexes
