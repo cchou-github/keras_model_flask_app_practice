@@ -23,8 +23,9 @@
 
     <p>
         <form method="post" enctype="multipart/form-data">
-            1. Upload a jpeg/png/webp image of a dog: <input type="file" name="file" accept=".jpg,.jpeg,.png,.webp"><br>
-            2. <input type="submit" value="Predict!">
+            Let's start!<br>
+            Upload a jpeg/png/webp image of a dog: 
+            <input type="file" name="file" accept=".jpg,.jpeg,.png,.webp" onchange="this.form.submit()"><br>
         </form>
     </p>
     {% if image_binary %}
@@ -68,3 +69,10 @@
     {% endif %}
 </body>
 </html>
+
+<!-- <script>
+    const form = document.getElementById('input-file');
+    form.addEventListener('change', (e) => {
+        this.form.submit();
+    })
+</script> -->
