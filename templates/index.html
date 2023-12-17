@@ -17,15 +17,17 @@
 <body>
     <h1>Dog Vision</h1>
     <p>
-        This is a Flask app that predicts the breed of the dog in the image.<br>
+        This is a Flask app that classifies the breed of the dog in the image.<br>
         The result will not be accurate if you upload an image that is not dog's image.
     </p>
 
     <p>
         <form method="post" enctype="multipart/form-data">
-            Let's start!<br>
-            Upload a jpeg/png/webp image of a dog: 
-            <input type="file" name="file" accept=".jpg,.jpeg,.png,.webp" onchange="this.form.submit()"><br>
+            <span style="font-weight: 700">
+                Let's start!<br>
+                Upload a jpeg/png/webp image of a dog: 
+                <input type="file" name="file" accept=".jpg,.jpeg,.png,.webp" onchange="this.form.submit()"><br>
+            </span>
         </form>
     </p>
     {% if image_binary %}
@@ -34,7 +36,7 @@
                 <td>
                     uploaded image:<br>
                     <img src="{{image_binary}}" style="max-width: 280px; max-height: 280ox"><br>
-                    - Highest possibile breed: <span style="font-weight: bold;">{{ top_1_pred_label }}</span><br>
+                    - Highest possible breed: <span style="font-weight: bold;">{{ top_1_pred_label }}</span><br>
                     - Probabilities: <span style="font-weight: bold;">{{ top_1_pred_prob }}%</span><br>
                     <P>
                         See what {{ top_1_pred_label }} looks like in Google image search:
@@ -44,7 +46,7 @@
                     </P>
                 </td>
                 <td>
-                    Top 10 predictions: <br>
+                    Top 10 breed possibilities: <br>
                     <table style="white-space:nowrap;">
                         {% for key, value in top_10_pred_dict.items() %}
                             <tr>
@@ -67,12 +69,47 @@
             <img src="{{plot_image_tag_src}}">
         </p>
     {% endif %}
+    -----------------------------------------------------------------------------------
+    <h4>About the machine learing model</h4>
+    <p>
+        The model this app used is built under the instruction of the machine learning course in Udemy:<br>
+        <a href="https://www.udemy.com/course/complete-machine-learning-and-data-science-zero-to-mastery/">
+            https://www.udemy.com/course/complete-machine-learning-and-data-science-zero-to-mastery/
+        </a><br>
+        
+    </p>
+    <p>
+        And it is trained to classify dog breeds by using transfer learning from a pre-trained model
+        <a href="https://www.kaggle.com/models/google/mobilenet-v2">
+            mobilenetV2
+        </a>.
+    </p>
+    <p>
+        You can check the whole steps in detail of building this model in my Google Colab:<br>
+        <a href="https://colab.research.google.com/drive/1n8nhzbG5V5Vf-tmiliWzSVVhA4gI3Om4?usp=sharing">
+            https://colab.research.google.com/drive/1n8nhzbG5V5Vf-tmiliWzSVVhA4gI3Om4?usp=sharing
+        </a>
+    </p>
+
+    <h4>The tools and libraries used:</h4>
+    <p>
+        For the model:<br>
+        - Google Colab<br>
+        - Python<br>
+        - Tensorflow<br>
+        - Tensorflow Hub<br>
+        - Keras<br>
+        - Numpy<br>
+        - Pandas<br>
+        - Metplotlib<br>
+    </p>
+    <p>
+        For the web:<br>
+        - Python<br>
+        - Flask<br>
+        - Docker<br>
+        - Numpy<br>
+        - Metplotlib<br>
+    </p>
 </body>
 </html>
-
-<!-- <script>
-    const form = document.getElementById('input-file');
-    form.addEventListener('change', (e) => {
-        this.form.submit();
-    })
-</script> -->
