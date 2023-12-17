@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 
+from PIL import Image
 import base64
 import re
 import io
@@ -10,10 +11,19 @@ import io
 IMAGE_SIZE = 224 # Define image size. 224 * 224 is required by mobilenet V2
 BATCH_SIZE = 32 # Define the batch size, 32 is a good start
 
-def to_tf_image(image_binary, image_size=IMAGE_SIZE):
+def to_tf_image(file_content_type, image_binary, image_size=IMAGE_SIZE):
     """
     Takes an image_binary and turns the image into a Tensor.
+    acceptable extension: png/jpeg/webp
     """
+
+    # convert webp data to jpeg
+    if 'webp' in file_content_type:
+        converted_png_data = Image.open(io.BytesIO(image_binary)).convert("RGB")
+        output = io.BytesIO()
+        converted_png_data.save(output, format='JPEG')
+        image_binary = output.getvalue()
+    
     # Turn the jpeg image into numerical Tensor with 3 colour channels (R, G, B)
     tf_image = tf.image.decode_jpeg(image_binary, channels=3)
     # Convert the colour channel values from 0-255 to 0-1 values
@@ -37,14 +47,6 @@ def to_image_tag_src(file_data):
     """
     Create base64 strings for image tag in HTML
     """
-  
-    image_tag_src_content_type = ''
-
-    # ファイル形式を取得
-    # if 'png' in file_content_type:
-    #     image_tag_src_content_type = 'png'
-    # elif 'jpeg' in file_content_type:
-    #     image_tag_src_content_type = 'jpeg'
 
     # bytesファイルのデータをbase64にエンコードする
     uploadimage_base64 = base64.b64encode(file_data)

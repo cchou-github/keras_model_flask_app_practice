@@ -31,9 +31,9 @@ def home():
         file = request.files['file']
         file_data = file.stream.read()
         image_tag_src = to_image_tag_src(file_data)
-
+                
         # create tf_image_data_batches and predict it.
-        tf_image = to_tf_image(file_data)
+        tf_image = to_tf_image(file.content_type, file_data)
         data_batches = create_tf_image_data_batches([tf_image])
         predictions = model.predict(data_batches, verbose=1)
 
